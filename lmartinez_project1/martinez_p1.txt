@@ -1,0 +1,83 @@
+Lillian Martinez
+Project 1
+
+
+1.) Add to the database the following table and data:
+
+	a.) Add a EDUCATION table with the following columns;
+	country code as a primary key,
+	literacy rate,
+	male literacy rate,
+	female literacy rate
+
+	CREATE TABLE EDUCATION
+	(
+	COUNTRY_CODE char(3) NOT NULL,
+	LITERACY_RATE int,
+	MALE_LITERACY_RATE int,
+	FEMALE_LITERACY_RATE int,
+	PRIMARY KEY (COUNTRY_CODE)
+	)
+
+
+	b.) Add data for the following countries
+	AFG, 38, 52, 24
+
+	DEU, 99, 99, 99
+
+	NLD, 99, 99, 99
+
+	USA, 99, 99, 99
+
+	INSERT INTO EDUCATION 	
+	(COUNTRY_CODE,LITERACY_RATE,FEMALE_LITERACY_RATE,MALE_LITERACY_RATE)
+	VALUES 
+	('AFG', 38, 52, 24),
+	('DEU', 99, 99, 99),
+	('NLD', 99, 99, 99),
+	('USA', 99, 99, 99);
+
+
+2.) Execute the following commands and save the results.
+
+	a.) Display the languages of the United States
+
+	select Language from CountryLanguage where CountryCode = 'USA'
+
+	Language
+	English
+	French
+	German
+	Italian
+	Japanese
+	Korean
+	Polish
+	Portuguese
+	Spanish
+	Tagalog
+	Vietnamese
+
+
+	b.) Display the cities of Germany and the population of each city
+
+	select Name,Population from City where CountryCode = 'DEU'
+
+	Name			Population
+	Berlin			3386667
+	Hamburg			1704735
+	Frankfurt am Main	643821
+	Essen			599515
+	Dortmund		590213
+	Stuttgart		582443
+
+
+	c.) Display the female literacy rate of all countries
+
+	select COUNTRY_CODE,FEMALE_LITERACY_RATE from EDUCATION
+
+	COUNTRY_CODE	FEMALE_LITERACY_RATE
+	AFG		52
+	DEU		99
+	NLD		99
+	USA		99
+

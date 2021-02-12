@@ -1,0 +1,155 @@
+USE PEOPLE; 
+CREATE TABLE PEOPLE
+	(idPeople	INTEGER	not null,
+	 name	VARCHAR(45)	not null,
+	 email	VARCHAR(45)	not null,
+	 PRIMARY KEY (idPeople)		);
+CREATE TABLE REGISTRATION
+	(idRegistration INTEGER	not null,
+	 idCountry	VARCHAR(45)	not null,
+	 idPeople	INTEGER	not null,
+	 Reg_Time	DATETIME	not null,
+	 PRIMARY KEY(idRegistration)	);
+CREATE TABLE COUNTRY
+	(idCountry	VARCHAR(45)	not null,
+	 Country	VARCHAR(45)	not null,
+	 PRIMARY KEY(idCountry)	);
+INSERT INTO PEOPLE VALUES(1,'Carley Bahringer','Carley_Bahringer@destiny.com');
+INSERT INTO PEOPLE VALUES(2,'Patricia Fadel','Patricia_Fadel@avis.com');
+INSERT INTO PEOPLE VALUES(3,'Sedrick Kuphal','Sedrick@godfrey.ca');
+INSERT INTO PEOPLE VALUES(4,'Briana Berge','Briana_Berge@axel.ca');
+INSERT INTO PEOPLE VALUES(5,'Lucy Lockman','Lucy_Lockman@abby.org');
+INSERT INTO PEOPLE VALUES(6,'Ayden Flatley','Ayden_Flatley@colin.biz');
+INSERT INTO PEOPLE VALUES(7,'Alec Boyle','Alec.Boyle@aurore.co.uk');
+INSERT INTO PEOPLE VALUES(8,'Ozella Feil','Ozella_Feil@prudence.ca');
+INSERT INTO REGISTRATION VALUES(1,'PNG',1,'1987-10-03 22:09:54');
+INSERT INTO REGISTRATION VALUES(2,'SL',2,'2012-05-10 11:07:49');
+INSERT INTO REGISTRATION VALUES(3,'CH',3,'2007-11-12 00:09:53');
+INSERT INTO REGISTRATION VALUES(4,'NI',4,'2006-03-26 15:32:08');
+INSERT INTO REGISTRATION VALUES(5,'IC',5,'2014-02-13 10:26:57');
+INSERT INTO REGISTRATION VALUES(6,'GE',5,'1999-02-12 00:14:54');
+INSERT INTO REGISTRATION VALUES(7,'FR',6,'1987-01-23 21:43:22');
+INSERT INTO REGISTRATION VALUES(8,'BR',7,'2007-08-23 13:42:41');
+INSERT INTO REGISTRATION VALUES(9,'LE',8,'2005-12-30 18:24:59');
+INSERT INTO REGISTRATION VALUES(10,'SW',8,'2009-06-19 10:32:55');
+INSERT INTO COUNTRY VALUES('PNG','Papua New Guinea');
+INSERT INTO COUNTRY VALUES('SL','Saint Lucia');
+INSERT INTO COUNTRY VALUES('CH','Chile');
+INSERT INTO COUNTRY VALUES('NI','Nicaragua');
+INSERT INTO COUNTRY VALUES('IC','Iceland');
+INSERT INTO COUNTRY VALUES('GE','Germany');
+INSERT INTO COUNTRY VALUES('FR','France');
+INSERT INTO COUNTRY VALUES('BR','Brazil');
+INSERT INTO COUNTRY VALUES('LE','Lesotho');
+INSERT INTO COUNTRY VALUES('SW','Sweden');
+show tables;
+DESCRIBE people;
+DESCRIBE registration;
+DESCRIBE country;
+
+-- MySQL dump 10.13  Distrib 8.0.17, for macos10.14 (x86_64)
+--
+-- Host: 127.0.0.1    Database: PEOPLE
+-- ------------------------------------------------------
+-- Server version	8.0.17
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `COUNTRY`
+--
+
+DROP TABLE IF EXISTS `COUNTRY`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `COUNTRY` (
+  `idCountry` varchar(45) NOT NULL,
+  `Country` varchar(45) NOT NULL,
+  PRIMARY KEY (`idCountry`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `COUNTRY`
+--
+
+LOCK TABLES `COUNTRY` WRITE;
+/*!40000 ALTER TABLE `COUNTRY` DISABLE KEYS */;
+INSERT INTO `COUNTRY` VALUES ('BR','Brazil'),('CH','Chile'),('FR','France'),('GE','Germany'),('IC','Iceland'),('LE','Lesotho'),('NI','Nicaragua'),('PNG','Papua New Guinea'),('SL','Saint Lucia'),('SW','Sweden');
+/*!40000 ALTER TABLE `COUNTRY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PEOPLE`
+--
+
+DROP TABLE IF EXISTS `PEOPLE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `PEOPLE` (
+  `idPeople` int(11) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  PRIMARY KEY (`idPeople`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PEOPLE`
+--
+
+LOCK TABLES `PEOPLE` WRITE;
+/*!40000 ALTER TABLE `PEOPLE` DISABLE KEYS */;
+INSERT INTO `PEOPLE` VALUES (1,'Carley Bahringer','Carley_Bahringer@destiny.com'),(2,'Patricia Fadel','Patricia_Fadel@avis.com'),(3,'Sedrick Kuphal','Sedrick@godfrey.ca'),(4,'Briana Berge','Briana_Berge@axel.ca'),(5,'Lucy Lockman','Lucy_Lockman@abby.org'),(6,'Ayden Flatley','Ayden_Flatley@colin.biz'),(7,'Alec Boyle','Alec.Boyle@aurore.co.uk'),(8,'Ozella Feil','Ozella_Feil@prudence.ca');
+/*!40000 ALTER TABLE `PEOPLE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `REGISTRATION`
+--
+
+DROP TABLE IF EXISTS `REGISTRATION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `REGISTRATION` (
+  `idRegistration` int(11) NOT NULL,
+  `idCountry` varchar(45) NOT NULL,
+  `idPeople` int(11) NOT NULL,
+  `Reg_Time` datetime NOT NULL,
+  PRIMARY KEY (`idRegistration`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `REGISTRATION`
+--
+
+LOCK TABLES `REGISTRATION` WRITE;
+/*!40000 ALTER TABLE `REGISTRATION` DISABLE KEYS */;
+INSERT INTO `REGISTRATION` VALUES (1,'PNG',1,'1987-10-03 22:09:54'),(2,'SL',2,'2012-05-10 11:07:49'),(3,'CH',3,'2007-11-12 00:09:53'),(4,'NI',4,'2006-03-26 15:32:08'),(5,'IC',5,'2014-02-13 10:26:57'),(6,'GE',5,'1999-02-12 00:14:54'),(7,'FR',6,'1987-01-23 21:43:22'),(8,'BR',7,'2007-08-23 13:42:41'),(9,'LE',8,'2005-12-30 18:24:59'),(10,'SW',8,'2009-06-19 10:32:55');
+/*!40000 ALTER TABLE `REGISTRATION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping events for database 'PEOPLE'
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2019-12-08 17:36:26

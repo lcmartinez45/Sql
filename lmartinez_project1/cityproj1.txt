@@ -1,0 +1,45 @@
+
+Project 1 
+_________
+
+-------------
+Project 1-2a
+-------------
+
+
+CREATE TABLE EDUCATION
+(
+COUNTRY_CODE char(3) NOT NULL,
+LITERACY_RATE int,
+MALE_LITERACY_RATE int,
+FEMALE_LITERACY_RATE int,
+PRIMARY KEY (COUNTRY_CODE)
+)
+
+
+-------------
+Project 1-2b
+-------------
+
+INSERT INTO EDUCATION (COUNTRY_CODE,LITERACY_RATE,FEMALE_LITERACY_RATE,MALE_LITERACY_RATE)
+VALUES 
+('AFG', 38, 52, 24),
+('DEU', 99, 99, 99),
+('NLD', 99, 99, 99),
+('USA', 99, 99, 99);
+
+-------------
+Project 1-3a
+-------------
+
+select Language from CountryLanguage where CountryCode = 'USA'
+
+-------------
+Project 1-3b
+-------------
+select Name,Population from City where CountryCode = 'DEU'
+
+-------------
+Project 1-3c
+-------------
+select COUNTRY_CODE,FEMALE_LITERACY_RATE from EDUCATION
