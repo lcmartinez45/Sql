@@ -1,0 +1,853 @@
+Lillian Martinez
+ITSE-1345 
+Lab 4 
+===================================================================================================================================================
+
+(1.)
+
+CREATE OR REPLACE PROCEDURE find_purchase_orders_sp
+    (p_cust_id1 IN purchase_order.cust_id%TYPE,
+     p_cust_id2 IN purchase_order.cust_id%TYPE)
+IS
+    CURSOR cur_purchase_order (p_cust_id purchase_order.cust_id%TYPE) IS
+        SELECT DISTINCT cust_id
+        FROM purchase_order
+        WHERE cust_id = p_cust_id
+        ORDER BY cust_id;
+    rec_cust_pur cur_purchase_order%ROWTYPE;
+    lv_cust_id purchase_order.cust_id%TYPE;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Searching for purchase orders in the range of customer IDs: ' || p_cust_id1 || ' to ' || p_cust_id2 || '.');
+    IF p_cust_id1 >= p_cust_id2 THEN
+        DBMS_OUTPUT.PUT_LINE('Invalid: The first Customer ID# must be less than the second Customer ID#.');
+    ELSE
+        FOR lv_cust_id IN p_cust_id1..p_cust_id2 LOOP
+            OPEN cur_purchase_order(lv_cust_id);
+                FETCH cur_purchase_order INTO rec_cust_pur;
+                IF cur_purchase_order%FOUND THEN
+                    DBMS_OUTPUT.PUT_LINE(lv_cust_id || ' has a purchase order.');
+                ELSE
+                    DBMS_OUTPUT.PUT_LINE(lv_cust_id || ' does not have a purchase order.');
+                END IF;
+            CLOSE cur_purchase_order;
+        END LOOP;
+    END IF;
+END;
+/
+
+
+Procedure FIND_PURCHASE_ORDERS_SP compiled
+
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('==========================================================================');
+    find_purchase_orders_sp(90001, 90008);
+    DBMS_OUTPUT.NEW_LINE;
+    DBMS_OUTPUT.PUT_LINE('==========================================================================');
+    find_purchase_orders_sp(90003, 90007);
+    DBMS_OUTPUT.NEW_LINE;
+    DBMS_OUTPUT.PUT_LINE('==========================================================================');
+    find_purchase_orders_sp(90009, 90010);
+    DBMS_OUTPUT.NEW_LINE;
+    DBMS_OUTPUT.PUT_LINE('==========================================================================');
+    find_purchase_orders_sp(90005, 90004);
+END;
+
+
+
+==========================================================================
+Searching for purchase orders in the range of customer IDs: 90001 to 90008.
+90001 has a purchase order.
+90002 does not have a purchase order.
+90003 does not have a purchase order.
+90004 has a purchase order.
+90005 has a purchase order.
+90006 does not have a purchase order.
+90007 has a purchase order.
+90008 has a purchase order.
+
+==========================================================================
+Searching for purchase orders in the range of customer IDs: 90003 to 90007.
+90003 does not have a purchase order.
+90004 has a purchase order.
+90005 has a purchase order.
+90006 does not have a purchase order.
+90007 has a purchase order.
+
+==========================================================================
+Searching for purchase orders in the range of customer IDs: 90009 to 90010.
+90009 does not have a purchase order.
+90010 does not have a purchase order.
+
+==========================================================================
+Searching for purchase orders in the range of customer IDs: 90005 to 90004.
+Invalid: The first Customer ID# must be less than the second Customer ID#.
+
+
+
+===================================================================================================================================================
+===================================================================================================================================================
+(2.)
+
+DROP TABLE physician;
+DROP TABLE patient;
+DROP TABLE procedure;
+DROP TABLE treatment;
+
+CREATE TABLE physician (
+    phys_id NUMBER(5) PRIMARY KEY,
+    phys_name VARCHAR2(30) NOT NULL,
+    phys_phone VARCHAR2(15),
+    phys_specialty VARCHAR2(20)
+    );
+
+
+Table PHYSICIAN dropped.
+Table PHYSICIAN created.
+
+
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (101, 'Wilcox, Chris', '512-329-1848', 'Eyes, Ears, Throat');
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (102, 'Nusca, Jane', '512-516-3947', 'Cardiovascular');
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (103, 'Gomez, Juan', '512-382-4987', 'Orthopedics');
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (104, 'Li, Jan', '512-516-3948', 'Cardiovascular');
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (105, 'Simmons, Alex', '512-442-5700', 'Hematology');
+COMMIT;
+
+
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+Commit complete.
+
+
+CREATE TABLE patient (
+    pat_nbr NUMBER(4) PRIMARY KEY,
+    pat_name VARCHAR2(20),
+    pat_address VARCHAR2(20),
+    pat_city VARCHAR2(10),
+    pat_state VARCHAR2(2),
+    pat_zip NUMBER(5),
+    pat_room NUMBER(3),
+    pat_bed NUMBER(1)); 
+/
+CREATE TABLE procedure(
+    pro_nbr VARCHAR2(5) PRIMARY KEY,
+    pro_desc VARCHAR2(20),
+    pro_charge NUMBER(6, 2));
+/
+CREATE TABLE treatment(
+    pat_nbr NUMBER(4),
+    phys_id NUMBER(5),
+    trt_procedure VARCHAR2(5),
+    trt_date DATE,
+    CONSTRAINT pk_treatment PRIMARY KEY(pat_nbr, trt_procedure, trt_date),
+    CONSTRAINT fk_treatment_patient FOREIGN KEY(pat_nbr) REFERENCES patient(pat_nbr),
+    CONSTRAINT fk_treatment_physician FOREIGN KEY(phys_id) REFERENCES physician(phys_id),
+    CONSTRAINT fk_treatment_procedure FOREIGN KEY(trt_procedure) REFERENCES procedure(pro_nbr)
+);
+
+
+Table PATIENT created.
+Table PROCEDURE created.
+Table TREATMENT created.
+
+
+INSERT INTO patient
+    VALUES(1379, 'Cribbes, John', '2110 Main St.', 'Austin', 'TX', 78711, 101, 1);
+INSERT INTO patient
+    VALUES(3249, 'Baker, Mary', '3547 W. 42nd St.', 'Berkeley', 'CA', 94117, 137, 2);
+INSERT INTO patient
+    VALUES(4500, 'Garcia, Juan', '1533 Telegraph', 'Berkeley', 'CA', 94117, 228, 2);
+INSERT INTO patient
+    VALUES(5116, 'Harris, Carol', '4710 Ave. E', 'Austin', 'TX', 78705, 438, 1);
+INSERT INTO patient
+    VALUES(5872, 'Zimmer, Elka', '7988 Cedar', 'Cleveland', 'OH', 44060, 137, 1);
+INSERT INTO patient
+    VALUES(6213, 'Rose, David', '322 Bridge Ave.', 'Redwood', 'CA', 94065, 100, 1);
+INSERT INTO patient
+    VALUES(7459, 'Smith, Chris', '788 Cummings', 'Cleveland', 'OH', 44066, 438, 3);
+INSERT INTO patient
+    VALUES(8031, 'Fitch, Sylvia', '3380 Fox Ave.', 'Madison', 'WI', 53711, 420, 4);
+INSERT INTO patient
+    VALUES(8659, 'Hernandez, Juan', '8300 Geneva Dr.', 'Austin', 'TX', 78723, 350, 2);  
+/
+
+
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+
+
+INSERT INTO procedure
+    VALUES('13-08', 'Throat culture', 15.00);
+INSERT INTO procedure
+    VALUES('27-45', 'X-Ray', 62.00);
+INSERT INTO procedure
+    VALUES('52-14', 'Cardiogram', 135.00);
+INSERT INTO procedure
+    VALUES('60-00', 'Blood Analysis', 58.00);
+INSERT INTO procedure
+    VALUES('88-20', 'MRI', 800.00);
+/
+
+
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+
+
+INSERT INTO treatment
+    VALUES(3249, 101, '13-08', '12-FEB-2019');
+INSERT INTO treatment
+    VALUES(1379, 103, '27-45', '25-MAR-2019');
+INSERT INTO treatment
+    VALUES(3249, 103, '88-20', '22-JAN-2019');
+INSERT INTO treatment
+    VALUES(5116, 104, '52-14', '03-APR-2019');
+INSERT INTO treatment
+    VALUES(4500, 101, '13-08', '04-FEB-2019');
+INSERT INTO treatment
+    VALUES(8031, 102, '52-14', '15-MAR-2020');
+INSERT INTO treatment
+    VALUES(5116, 104, '52-14', '05-FEB-2021');
+INSERT INTO treatment
+    VALUES(5872, 105, '60-00', '13-FEB-2020');
+INSERT INTO treatment
+    VALUES(3249, 103, '88-20', '24-JAN-2020');
+INSERT INTO treatment
+    VALUES(8659, 104, '60-00', '08-APR-2021');
+/
+
+
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+1 row inserted.
+
+
+COMMIT;
+
+Commit complete.
+
+
+CREATE OR REPLACE PACKAGE Hospital IS
+    TYPE rec_pat_trt IS RECORD
+        (pat_nbr treatment.pat_nbr%TYPE,
+         trt_procedure treatment.trt_procedure%TYPE,
+         phys_id treatment.phys_id%TYPE,
+         phys_name physician.phys_name%TYPE,
+         phys_specialty physician.phys_specialty%TYPE);
+  
+    TYPE t_patTrt IS TABLE OF rec_pat_trt 
+        INDEX BY PLS_INTEGER;
+  
+    PROCEDURE BuildPatTbl (p_pat_trt_tbl OUT t_patTrt, 
+                           p_num_rows IN OUT NUMBER);
+  
+    FUNCTION FindPatient (p_pat_id IN NUMBER) 
+        RETURN BOOLEAN;
+  
+    FUNCTION FindPatient (p_pat_name IN VARCHAR2) 
+        RETURN BOOLEAN;
+  
+    PROCEDURE NewPhys (p_phys_id IN NUMBER,
+                       p_phys_name IN VARCHAR2,
+                       p_phys_phone IN VARCHAR2,
+                       p_phys_specialty IN VARCHAR2);
+  
+    e_DupPhysFound EXCEPTION;
+END Hospital;
+/
+
+Package HOSPITAL compiled
+
+
+CREATE OR REPLACE PACKAGE BODY Hospital IS
+    PROCEDURE BuildPatTbl(p_pat_trt_tbl OUT t_PatTrt, -- a table of all treatments for all patients
+                          p_num_rows IN OUT NUMBER)
+    IS
+    BEGIN
+        SELECT pat_nbr, trt_procedure, phys_id, phys_name, phys_specialty
+            BULK COLLECT INTO p_pat_trt_tbl
+            FROM treatment
+            LEFT JOIN physician
+                USING (phys_id)
+            ORDER BY pat_nbr, trt_procedure;
+        p_num_rows := SQL%ROWCOUNT;
+    END BuildPatTbl;
+  
+    FUNCTION FindPatient (p_pat_id IN NUMBER) 	-- check to see if a patient is in the database by patient #
+        RETURN BOOLEAN
+    IS
+        lv_row_find NUMBER;
+    BEGIN
+        SELECT COUNT(*) 
+            INTO lv_row_find 
+            FROM Patient 
+            WHERE pat_nbr = p_pat_id;
+        IF (lv_row_find = 0) THEN
+            DBMS_OUTPUT.PUT_LINE('Patient not found.');
+            RETURN FALSE;
+        ELSE 
+            DBMS_OUTPUT.PUT_LINE('Patient found.');
+            RETURN TRUE;
+        END IF;
+    END FindPatient;
+  
+    FUNCTION FindPatient (p_pat_name IN VARCHAR2) 	-- check to see if a patient is in the database by name
+        RETURN BOOLEAN
+    IS
+        lv_row_find NUMBER;
+    BEGIN
+        SELECT COUNT(*) 
+            INTO lv_row_find 
+            FROM patient 
+            WHERE pat_name = p_pat_name;
+        IF (lv_row_find = 0) THEN 
+            DBMS_OUTPUT.PUT_LINE('Patient not found.');
+            RETURN FALSE;
+        ELSE 
+            DBMS_OUTPUT.PUT_LINE('Patient found.');
+            RETURN TRUE;
+        END IF;
+    END FindPatient;
+  
+    PROCEDURE NewPhys (p_phys_id IN NUMBER,
+                       p_phys_name IN VARCHAR2,
+                       p_phys_phone IN VARCHAR2,
+                       p_phys_specialty IN VARCHAR2) -- inserts a new physician into the physician table
+    IS 
+        lv_row_found NUMBER; 
+    BEGIN					-- check to see if the physician is already in the table
+        SELECT COUNT(*) 
+            INTO lv_row_found 
+            FROM physician 
+            WHERE phys_id = p_phys_id
+                OR phys_name = p_phys_name;
+        IF (lv_row_found = 0) THEN
+            INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+                VALUES (p_phys_id, p_phys_name, p_phys_phone, p_phys_specialty);
+        ELSE
+            RAISE e_DupPhysFound;
+        END IF;
+    END NewPhys;
+END Hospital;
+/
+
+Package Body HOSPITAL compiled
+
+
+===================================================================================================================================================
+===================================================================================================================================================
+(3.)
+
+DECLARE
+    lv_pat_id NUMBER(4,0) := 8659;  		  -- Valid patient ID#
+    lv_pat_name VARCHAR2(20) := 'Fitch, Sylvia';  -- Valid patient name
+    lv_pat_trt_tbl Hospital.t_PatTrt;  		  -- Declare a table of the type t_PatTrt.
+    lv_num_rows NUMBER;
+BEGIN   
+    IF (Hospital.FindPatient(lv_pat_id)) THEN					-- Call the FindPatient function with a valid Patient ID#
+        DBMS_OUTPUT.PUT_LINE(lv_pat_id || ' is a valid Patient ID#.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE(lv_pat_id || ' is an invalid Patient ID#.');
+    END IF;
+    DBMS_OUTPUT.NEW_LINE;
+       
+    IF (Hospital.FindPatient(lv_pat_name)) THEN					-- Call the FindPatient function with a valid Patient Name
+        DBMS_OUTPUT.PUT_LINE(lv_pat_name || ' is a valid Patient Name.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE(lv_pat_name || ' is an invalid Patient Name.');
+    END IF;
+    DBMS_OUTPUT.NEW_LINE;
+
+    lv_pat_id := 1000; 								-- Call the FindPatient function with an invalid Patient ID#
+    IF (Hospital.FindPatient(lv_pat_id)) THEN
+        DBMS_OUTPUT.PUT_LINE(lv_pat_id || ' is a valid Patient ID#.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE(lv_pat_id || ' is an invalid Patient ID#.');
+    END IF;
+
+    DBMS_OUTPUT.NEW_LINE;
+    DBMS_OUTPUT.PUT_LINE ('===================================================');
+    BEGIN
+        Hospital.NewPhys(100, 'Harris, Kamala', '512-1111-1111', 'Orthopedics');  	-- Use the NewPhys procedure to insert a new physician into the Physician table
+        Hospital.NewPhys(100, 'Harris, Kamala', '512-1111-1111', 'Orthopedics');  	-- Use the NewPhys procedure to insert a physician who already exists.
+    EXCEPTION 										-- Check for the exception e_DupPhysFound in this driver
+        WHEN Hospital.e_DupPhysFound THEN
+            DBMS_OUTPUT.PUT_LINE('Duplicate Physician ID# and/or Physician Name exists.');
+            GOTO resume; -- to resume
+    END;
+    
+    <<resume>>
+    DBMS_OUTPUT.NEW_LINE;
+    DBMS_OUTPUT.PUT_LINE ('===================================================');
+
+    Hospital.BuildPatTbl(lv_pat_trt_tbl, lv_num_rows);  -- Call the procedure BuildPatTbl which will store patients and treatments in the declared t_PatTrt table.
+    
+    DBMS_OUTPUT.PUT_LINE(lv_num_rows || ' patient/treatments identified:');  -- List the patients returned in the table.
+    DBMS_OUTPUT.NEW_LINE;
+    FOR i IN 1..lv_num_rows LOOP
+        DBMS_OUTPUT.PUT_LINE ('Patient ID#: ' || lv_pat_trt_tbl(i).pat_nbr);              -- List all fields in the table for each patient.
+        DBMS_OUTPUT.PUT_LINE ('Treatment Code: ' || lv_pat_trt_tbl(i).trt_procedure);
+        DBMS_OUTPUT.PUT_LINE ('Physician ID#: ' || lv_pat_trt_tbl(i).phys_id);
+        DBMS_OUTPUT.PUT_LINE ('Physician Name: ' || lv_pat_trt_tbl(i).phys_name);
+        DBMS_OUTPUT.PUT_LINE ('Physician Specialty: ' || lv_pat_trt_tbl(i).phys_specialty);
+        DBMS_OUTPUT.NEW_LINE;
+        DBMS_OUTPUT.PUT_LINE ('===================================================');
+    END LOOP;
+END;
+/
+
+
+PL/SQL procedure successfully completed.
+
+
+Patient found.
+8659 is a valid Patient ID#.
+
+Patient found.
+Fitch, Sylvia is a valid Patient Name.
+
+Patient not found.
+1000 is an invalid Patient ID#.
+
+===================================================
+Duplicate Physician ID# and/or Physician Name exists.
+
+===================================================
+10 patient/treatments identified:
+
+Patient ID#: 1379
+Treatment Code: 27-45
+Physician ID#: 103
+Physician Name: Gomez, Juan
+Physician Specialty: Orthopedics
+
+===================================================
+Patient ID#: 3249
+Treatment Code: 13-08
+Physician ID#: 101
+Physician Name: Wilcox, Chris
+Physician Specialty: Eyes, Ears, Throat
+
+===================================================
+Patient ID#: 3249
+Treatment Code: 88-20
+Physician ID#: 103
+Physician Name: Gomez, Juan
+Physician Specialty: Orthopedics
+
+===================================================
+Patient ID#: 3249
+Treatment Code: 88-20
+Physician ID#: 103
+Physician Name: Gomez, Juan
+Physician Specialty: Orthopedics
+
+===================================================
+Patient ID#: 4500
+Treatment Code: 13-08
+Physician ID#: 101
+Physician Name: Wilcox, Chris
+Physician Specialty: Eyes, Ears, Throat
+
+===================================================
+Patient ID#: 5116
+Treatment Code: 52-14
+Physician ID#: 104
+Physician Name: Li, Jan
+Physician Specialty: Cardiovascular
+
+===================================================
+Patient ID#: 5116
+Treatment Code: 52-14
+Physician ID#: 104
+Physician Name: Li, Jan
+Physician Specialty: Cardiovascular
+
+===================================================
+Patient ID#: 5872
+Treatment Code: 60-00
+Physician ID#: 105
+Physician Name: Simmons, Alex
+Physician Specialty: Hematology
+
+===================================================
+Patient ID#: 8031
+Treatment Code: 52-14
+Physician ID#: 102
+Physician Name: Nusca, Jane
+Physician Specialty: Cardiovascular
+
+===================================================
+Patient ID#: 8659
+Treatment Code: 60-00
+Physician ID#: 104
+Physician Name: Li, Jan
+Physician Specialty: Cardiovascular
+
+===================================================
+
+
+
+
+===================================================================================================================================================
+===================================================================================================================================================
+(4.)
+
+** Patient Table **
+COLUMN pat_state FORMAT A10
+SELECT * FROM patient;
+
+
+   PAT_NBR PAT_NAME             PAT_ADDRESS          PAT_CITY   PAT_STATE     PAT_ZIP   PAT_ROOM    PAT_BED
+---------- -------------------- -------------------- ---------- ---------- ---------- ---------- ----------
+      1379 Cribbes, John        2110 Main St.        Austin     TX              78711        101          1
+      3249 Baker, Mary          3547 W. 42nd St.     Berkeley   CA              94117        137          2
+      4500 Garcia, Juan         1533 Telegraph       Berkeley   CA              94117        228          2
+      5116 Harris, Carol        4710 Ave. E          Austin     TX              78705        438          1
+      5872 Zimmer, Elka         7988 Cedar           Cleveland  OH              44060        137          1
+      6213 Rose, David          322 Bridge Ave.      Redwood    CA              94065        100          1
+      7459 Smith, Chris         788 Cummings         Cleveland  OH              44066        438          3
+      8031 Fitch, Sylvia        3380 Fox Ave.        Madison    WI              53711        420          4
+      8659 Hernandez, Juan      8300 Geneva Dr.      Austin     TX              78723        350          2
+
+9 rows selected. 
+
+
+** Both tables look the same. **
+
+** Showing that updating still works. **
+UPDATE patient
+    SET pat_name = 'Harris, Kamala'
+    WHERE pat_nbr = 5116;
+
+1 row updated.
+
+COLUMN pat_state FORMAT A10
+select * from patient;
+
+   PAT_NBR PAT_NAME             PAT_ADDRESS          PAT_CITY   PAT_STATE     PAT_ZIP   PAT_ROOM    PAT_BED
+---------- -------------------- -------------------- ---------- ---------- ---------- ---------- ----------
+      1379 Cribb, John          2110 Main St.        Austin     TX              78711        101          1
+      3249 Baker, Mary          3547 W. 42nd St.     Berkeley   CA              94117        137          2
+      4500 Garcia, Juan         1533 Telegraph       Berkeley   CA              94117        228          2
+      5116 Harris, Kamala        4710 Ave. E          Austin     TX              78705        438          1
+      5872 Zimmer, Elka         7988 Cedar           Cleveland  OH              44060        137          1
+      6213 Rose, David          322 Bridge Ave.      Redwood    CA              94065        100          1
+      7459 Smith, Chris         788 Cummings         Cleveland  OH              44066        438          3
+      8031 Fitch, Sylvia        3380 Fox Ave.        Madison    WI              53711        420          4
+      8659 Hernandez, Juan      8300 Geneva Dr.      Austin     TX              78723        350          2
+
+9 rows selected. 
+
+ROLLBACK;
+
+Rollback complete.
+
+** Patient Table **
+COLUMN pat_bed FORMAT A10
+SELECT * FROM patient;
+
+   PAT_NBR PAT_NAME             PAT_ADDRESS          PAT_CITY   PAT_STATE     PAT_ZIP   PAT_ROOM    PAT_BED
+---------- -------------------- -------------------- ---------- ---------- ---------- ---------- ----------
+      1379 Cribbes, John        2110 Main St.        Austin     TX              78711        101          1
+      3249 Baker, Mary          3547 W. 42nd St.     Berkeley   CA              94117        137          2
+      4500 Garcia, Juan         1533 Telegraph       Berkeley   CA              94117        228          2
+      5116 Harris, Carol        4710 Ave. E          Austin     TX              78705        438          1
+      5872 Zimmer, Elka         7988 Cedar           Cleveland  OH              44060        137          1
+      6213 Rose, David          322 Bridge Ave.      Redwood    CA              94065        100          1
+      7459 Smith, Chris         788 Cummings         Cleveland  OH              44066        438          3
+      8031 Fitch, Sylvia        3380 Fox Ave.        Madison    WI              53711        420          4
+      8659 Hernandez, Juan      8300 Geneva Dr.      Austin     TX              78723        350          2
+
+9 rows selected. 
+
+
+
+** Physician Table **
+SELECT * FROM physician;
+
+   PHYS_ID PHYS_NAME                      PHYS_PHONE      PHYS_SPECIALTY      
+---------- ------------------------------ --------------- --------------------
+       101 Wilcox, Chris                  512-329-1848    Eyes, Ears, Throat  
+       102 Nusca, Jane                    512-516-3947    Cardiovascular      
+       103 Gomez, Juan                    512-382-4987    Orthopedics         
+       104 Li, Jan                        512-516-3948    Cardiovascular      
+       105 Simmons, Alex                  512-442-5700    Hematology          
+       100 Harris, Kamala                 512-1111-1111   Orthopedics         
+
+6 rows selected. 
+
+
+DELETE FROM physician WHERE phys_id = 100;
+
+1 row deleted.
+
+** Physician Table **
+SELECT * FROM physician;
+
+   PHYS_ID PHYS_NAME                      PHYS_PHONE      PHYS_SPECIALTY      
+---------- ------------------------------ --------------- --------------------
+       101 Wilcox, Chris                  512-329-1848    Eyes, Ears, Throat  
+       102 Nusca, Jane                    512-516-3947    Cardiovascular      
+       103 Gomez, Juan                    512-382-4987    Orthopedics         
+       104 Li, Jan                        512-516-3948    Cardiovascular      
+       105 Simmons, Alex                  512-442-5700    Hematology      
+
+
+** Treatment Table **
+SELECT * FROM treatment;
+
+   PAT_NBR    PHYS_ID TRT_P TRT_DATE 
+---------- ---------- ----- ---------
+      3249        101 13-08 12-FEB-19
+      1379        103 27-45 25-MAR-19
+      3249        103 88-20 22-JAN-19
+      5116        104 52-14 03-APR-19
+      4500        101 13-08 04-FEB-19
+      8031        102 52-14 15-MAR-20
+      5116        104 52-14 05-FEB-21
+      5872        105 60-00 13-FEB-20
+      3249        103 88-20 24-JAN-20
+      8659        104 60-00 08-APR-21
+
+10 rows selected. 
+
+
+UPDATE treatment 
+    SET trt_date = trt_date - NUMTOYMINTERVAL(20, 'YEAR'); 
+
+10 rows updated.
+
+
+** Treatment Table **
+COLUMN pat_nbr HEADING 'Pat_Nbr'
+COLUMN phys_id HEADING 'Phys_ID'
+COLUMN trt_procedure HEADING 'Trt_Procedure' 
+COLUMN trt_date HEADING 'Trt_Date' 
+
+SELECT * FROM treatment;
+
+   Pat_Nbr    Phys_ID Trt_Procedure Trt_Date 
+---------- ---------- ------------- ---------
+      3249        101 13-08 	    12-FEB-99
+      1379        103 27-45         25-MAR-99
+      3249        103 88-20         22-JAN-99
+      5116        104 52-14         03-APR-99
+      4500        101 13-08         04-FEB-99
+      8031        102 52-14         15-MAR-00
+      5116        104 52-14         05-FEB-01
+      5872        105 60-00         13-FEB-00
+      3249        103 88-20         24-JAN-00
+      8659        104 60-00         08-APR-01
+
+10 rows selected. 
+
+
+** Procedure Table **
+COLUMN  pro_charge  FORMAT 999.99
+SELECT * FROM procedure;
+
+PRO_N PRO_DESC             PRO_CHARGE
+----- -------------------- ----------
+13-08 Throat culture            15.00
+27-45 X-Ray                     62.00
+52-14 Cardiogram               135.00
+60-00 Blood Analysis            58.00
+88-20 MRI                      800.00
+
+** No data changed in the Procedure table we created in #2. **
+
+
+===================================================================================================================================================
+===================================================================================================================================================
+(5.)
+
+CREATE OR REPLACE TRIGGER treatment_trg
+    BEFORE INSERT OR UPDATE OF trt_date ON treatment
+    FOR EACH ROW
+    WHEN (NEW.trt_date > SYSDATE 
+        OR NEW.trt_date < (ADD_MONTHS(SYSDATE, -3)))
+BEGIN
+    RAISE_APPLICATION_ERROR(-20100, 'Invalid treatment date');
+END;
+/
+
+Trigger TREATMENT_TRG compiled
+
+
+INSERT INTO treatment			-- Insert row into treatment table with a valid date 
+    VALUES(8659, 104, '60-00', SYSDATE);
+
+INSERT INTO treatment			-- Insert row into treatment table with an invalid date 
+    VALUES(8659, 104, '60-00', '01-JAN-2020');
+
+
+1 row inserted.
+
+Error starting at line : 4 in command -
+INSERT INTO treatment			-- Insert row into treatment table with an valid date 
+    VALUES(8659, 104, '60-00', '01-JAN-2020')
+Error report -
+ORA-20100: Invalid treatment date
+ORA-06512: at "SYSTEM.TREATMENT_TRG", line 2
+ORA-04088: error during execution of trigger 'SYSTEM.TREATMENT_TRG'
+
+
+SELECT * FROM treatment;
+
+   Pat_Nbr    Phys_ID Trt_Procedure Trt_Date 
+---------- ---------- ------------- ---------
+      3249        101 13-08         12-FEB-99
+      1379        103 27-45         25-MAR-99
+      3249        103 88-20         22-JAN-99
+      5116        104 52-14         03-APR-99
+      4500        101 13-08         04-FEB-99
+      8031        102 52-14         15-MAR-00
+      5116        104 52-14         05-FEB-01
+      5872        105 60-00         13-FEB-00
+      3249        103 88-20         24-JAN-00
+      8659        104 60-00         08-APR-01
+      8659        104 60-00         06-DEC-20  <-- new date
+
+11 rows selected. 
+
+
+
+===================================================================================================================================================
+===================================================================================================================================================
+(6a.)
+
+DROP TABLE trt_stats;
+
+CREATE TABLE trt_stats 
+    (trt_procedure VARCHAR2(5) PRIMARY KEY,
+     trt_ins_count NUMBER,
+     trt_del_count NUMBER,
+     trt_upd_count NUMBER,
+     CHECK (trt_ins_count >= 0),
+     CHECK (trt_del_count >= 0),
+     CHECK (trt_upd_count >= 0));
+     
+DESCRIBE trt_stats;
+
+
+Table TRT_STATS created.
+
+Name          Null?    Type        
+------------- -------- ----------- 
+TRT_PROCEDURE NOT NULL VARCHAR2(5) 
+TRT_INS_COUNT          NUMBER      
+TRT_DEL_COUNT          NUMBER      
+TRT_UPD_COUNT          NUMBER      
+
+
+(6b.)
+
+CREATE OR REPLACE TRIGGER trt_stats_trg
+    BEFORE INSERT OR DELETE OR UPDATE ON treatment
+    FOR EACH ROW
+BEGIN
+    IF INSERTING THEN
+        UPDATE trt_stats					-- If the trt_procedure already exists in the trt_status table
+            SET trt_ins_count = nvl(trt_ins_count, 0)+1
+            WHERE trt_stats.trt_procedure = :NEW.trt_procedure;    
+        IF SQL%NOTFOUND THEN					-- Add new row with the new trt_procedure insert stat
+            INSERT INTO trt_stats (trt_procedure, trt_ins_count) 
+                VALUES (:NEW.trt_procedure, 1);
+        END IF;
+    END IF;
+
+    IF UPDATING THEN
+        UPDATE trt_stats 
+            SET trt_upd_count = nvl(trt_upd_count,0)+1
+            WHERE trt_stats.trt_procedure = :OLD.trt_procedure;
+        IF SQL%NOTFOUND THEN
+            INSERT INTO trt_stats (trt_procedure, trt_upd_count) 
+                VALUES (:OLD.trt_procedure, 1);
+        END IF;
+    
+        UPDATE trt_stats 
+            SET trt_upd_count = nvl(trt_upd_count,0)+1
+            WHERE trt_stats.trt_procedure = :NEW.trt_procedure;
+        IF SQL%NOTFOUND THEN
+            INSERT INTO trt_stats (trt_procedure, trt_upd_count) 
+                VALUES (:NEW.trt_procedure, 1);
+        END IF;
+    END IF;
+
+    IF DELETING THEN    
+        UPDATE trt_stats 					 -- If the trt_procedure already exists in the trt_status table
+            SET trt_del_count = nvl(trt_del_count, 0)+1
+            WHERE trt_stats.trt_procedure = :OLD.trt_procedure;
+        IF SQL%NOTFOUND THEN
+            INSERT INTO trt_stats (trt_procedure, trt_del_count) 
+                VALUES (:OLD.trt_procedure, 1);
+        END IF;
+    END IF;
+END;
+/
+
+
+Trigger TRT_STATS_TRG compiled
+
+
+INSERT INTO treatment
+    VALUES(6213, 103, '27-45', '01-DEC-20');
+
+1 row inserted.
+
+INSERT INTO treatment
+    VALUES(7459, 103, '27-45', '01-DEC-20');
+
+1 row inserted.
+
+UPDATE treatment
+SET trt_date = '06-DEC-20'
+WHERE pat_nbr = 7459
+AND trt_procedure = '27-45';
+
+1 row updated.  
+
+UPDATE treatment
+SET trt_procedure = '88-20'
+WHERE pat_nbr = 7459
+AND trt_procedure = '27-45';
+
+1 row updated.
+
+DELETE FROM treatment
+WHERE TRT_PROCEDURE = '88-20';
+
+3 rows deleted.
+
+
+SELECT * FROM trt_stats;
+
+Trt_Procedure TRT_INS_COUNT TRT_DEL_COUNT TRT_UPD_COUNT
+------------- ------------- ------------- -------------
+27-45                     2                           3
+88-20                                   3             1

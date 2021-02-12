@@ -1,0 +1,326 @@
+Lillian Martinez
+ITSE-1345 
+Lab 2 
+-----------------------------------------------------------------------------
+/*
+Problem 1:
+Create an Anonymous block. Declare a Sequence Number named list#, a
+constant named C_XYZ that is Number(10), an Binary Integer named V_Counter1, 
+a variable named V_Row_number based on the column Row in the Theater Table 
+(you will have to create the table and the row), and a character string named 
+String A that is up to 50 characters long. 
+*/
+
+Sequence SEQ_LIST# created.
+Table THEATRE created.
+PL/SQL procedure successfully completed.
+
+-----------------------------------------------------------------------------
+/*
+Problem 2:
+Create an Anonymous block that Creates and Inserts data into the Student, 
+Course and Student/Course composite tables using the Create and Insert 
+commands. You will find the table description attached. 
+Create tables, then insert data.
+*/
+
+Sequence SEQ_STU_ID# created.
+Table STUDENT created.
+Table COURSE created.
+Table STUDENT_COURSE created.
+
+
+/*
+Use sequences to use next value and current value for student id # 
+with each student simutaneously inputing information in both the student table
+and the student course table
+*/
+
+PL/SQL procedure successfully completed.
+
+
+Name       Null?    Type         
+---------- -------- ------------ 
+STU_ID     NOT NULL NUMBER(5)    
+LNAME               VARCHAR2(20) 
+FNAME               VARCHAR2(20) 
+MI                  CHAR(1)      
+SEX                 CHAR(1)      
+MAJOR               VARCHAR2(30) 
+HOME_STATE          CHAR(2)      
+
+Stu_ID LName      FName      Mi  Sex  Major      Home_State
+------ ---------- ---------- --- ---- ---------- ----------
+ 10011 Smith      Peter      M   M    Math       TX        
+ 10012 Jones      Sam        A   M    English    TX        
+ 10013 Peters     Amy        A   F    English    ME        
+ 10014 Johnson    John       J   M    CompSci    CA        
+ 10015 Penders    Alton      P   F    Math       GA        
+ 10016 Allen      Diane      J   F    Geography  MN        
+ 10017 Gill       Jennifer       F    CompSci    TX        
+ 10018 Johns      Roberta        F    CompSci    TX        
+ 10019 Wier       Paul           M    Math       AL        
+ 10020 Evans      Richard        M    English    TX         
+
+10 rows selected. 
+
+Name          Null? Type         
+------------- ----- ------------ 
+COURSE_ID           VARCHAR2(10) 
+SECTION             NUMBER(3)    
+C_NAME              VARCHAR2(30) 
+C_DESCRIPTION       VARCHAR2(30) 
+
+Course_ID  Section# Course_Name          Course_Description       
+---------- -------- -------------------- -------------------------
+COSC1300        001 Intro to Comp.       First Computer Course    
+ITSE2309        001 Intro to DBA         Database Course          
+GEOG1791        002 World Geography      Second Geography Course  
+COSC1315        001 Intro to Prog.       Second Computer Course   
+ITSE1345        001 Intro to DB Prog.    Second Database Course   
+ENGL2617        002 English Literature   Second English Course    
+MATH1101        001 Calculus II          Second Math Course       
+ENGL1001        001 American Literature  First English Course     
+MATH1011        001 Trig. & Algebra      First Math Course        
+GEOG1010        001 Texas Geography      First Geography Course        
+
+10 rows selected.
+
+Name      Null? Type         
+--------- ----- ------------ 
+STU_ID          NUMBER(5)    
+COURSE_ID       VARCHAR2(10) 
+SECTION         NUMBER(3)      
+
+Stu_ID Course_ID  Section#
+------ ---------- --------
+ 10011 MATH1101        001
+ 10012 ENGL2617        002
+ 10013 ENGL1001        001
+ 10013 ENGL2617        002
+ 10013 GEOG1010        001
+ 10014 COSC1315        001
+ 10015 MATH1101        001
+ 10016 GEOG1010        001
+ 10016 GEOG1791        002
+ 10017 COSC1315        001
+ 10017 ITSE2309        001
+
+Stu_ID Course_ID  Section#
+------ ---------- --------
+ 10018 COSC1315        001
+ 10019 ITSE2309        001
+ 10020 ENGL2617        002
+
+14 rows selected. 
+
+-----------------------------------------------------------------------------
+/*
+Problem 3:
+Create an Anonymous block that counts the number of courses a student is 
+signed up for in the Course/Student composite table. Use the tables you 
+created in #2 above.
+*/
+
+PL/SQL procedure successfully completed.
+
+Student ID    # of courses
+--------------------------
+10011          1
+10012          1
+10013          3
+10014          1
+10015          1
+10016          2
+10017          2
+10018          1
+10019          1
+10020          1
+
+-----------------------------------------------------------------------------
+/*
+Problem 4:
+Create an Anonymous block that counts the number of students enrolled in 
+the Student table. Use DBMS Output Putline to send out a message stating 
+the number of students found. 
+*/
+
+PL/SQL procedure successfully completed.
+
+Number of students
+------------------
+10 students found
+
+-----------------------------------------------------------------------------
+/*
+Problem 5:
+Create an Anonymous block that determines the number of courses in the 
+StudentCourse table and (using the IF statement) if the number is greater 
+than 10 sends out a message (using DBMS Output Putline) stating that 
+“more than 10 courses have been established”. If the number is less than 
+10 send out a message stating “less than 10 courses established”. 
+*/
+
+PL/SQL procedure successfully completed.
+
+Number of courses
+-----------------
+10 courses have been established
+
+-----------------------------------------------------------------------------
+/*
+Problem 6:
+Create an Anonymous block that tests each student entry in the student table 
+to see if the student is an instate student. Print out, 
+(using the DBMS Output Putline) a line stating that each student is or is 
+not an instate student and a count of the students in and out of state at 
+the end of the program.
+*/ 
+
+PL/SQL procedure successfully completed.
+
+Stu_ID   Instate?
+-----------------
+10011    Yes
+10012    Yes
+10013    No
+10014    No
+10015    No
+10016    No
+10017    Yes
+10018    Yes
+10019    No
+10020    Yes
+
+Instate: 5
+Out of State: 5
+
+-----------------------------------------------------------------------------
+/*
+Problem 7:
+Create an Anonymous block that takes the information provided by Named 
+Parameters, & Variable_Name, to determine if a student is registered in the 
+specified course from the student/course table created above. Use the DBMS 
+Output Putline to send a message indicating if the student specified is in 
+the course specified.
+*/
+
+PL/SQL procedure successfully completed.
+
+Student ID#: 10012 is not enrolled in COSC1315.
+
+(Verify and change stu_id to 10014, COSC1315):
+DECLARE
+    lv_stu_id student_course.stu_id%TYPE := 10014;
+    lv_course_id student_course.course_id%TYPE := 'COSC1315';
+    lv_flag_exists NUMBER(1) := 0;
+
+Student ID#: 10014 is enrolled in COSC1315.
+
+-----------------------------------------------------------------------------
+/*
+Problem 8:
+Create an Anonymous block that uses the: 
+1) “If”  construct to test if each student is male or female and
+2) The “Case” Construct to determine if the major is a Math, English, 
+Comp Sci, or Geography major. 
+*/
+
+PL/SQL procedure successfully completed.
+
+StuID#      Sex      Major
+-------------------------------------
+10011       Male     Mathematics
+10012       Male     English
+10013       Female   English
+10014       Male     Computer Science
+10015       Female   Mathematics
+10016       Female   Geography
+10017       Female   Computer Science
+10018       Female   Computer Science
+10019       Male     Mathematics
+10020       Male     English
+
+Number of Males: 5
+Number of Females: 5
+Number of Math majors: 3
+Number of English majors: 3
+Number of Computer Science majors: 3
+Number of Geography majors: 1
+
+-----------------------------------------------------------------------------
+/*
+Problem 9:
+Create an Anonymous block that performs the same activity as in #8 above 
+using the  "IF" construct in place of the Case Construct.
+*/
+
+PL/SQL procedure successfully completed.
+
+StuID#      Sex      Major
+--------------------------
+10011       Male     Mathematics
+10012       Male     English
+10013       Female   English
+10014       Male     Computer Science
+10015       Female   Mathematics
+10016       Female   Geography
+10017       Female   Computer Science
+10018       Female   Computer Science
+10019       Male     Mathematics
+10020       Male     English
+
+Number of Males: 5
+Number of Females: 5
+Number of Math majors: 3
+Number of English majors: 3
+Number of Computer Science majors: 3
+Number of Geography majors: 1
+
+-----------------------------------------------------------------------------
+/*
+Problem 10:
+Create an Anonymous block that Inserts rows of data from the student table 
+into a temporary table and uses a loop with a counter to know when to exit. 
+Set the counter equal to the Count of the rows in the student table so it 
+will know when to end processing. 
+*/
+
+Table TEMP_TABLE created.
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+Count of rows in the student table: 10
+
+Inserting row #1:
+10011, Smith, Peter, M, M, Math, TX
+
+Inserting row #2:
+10012, Jones, Sam, A, M, English, TX
+
+Inserting row #3:
+10013, Peters, Amy, A, F, English, ME
+
+Inserting row #4:
+10014, Johnson, John, J, M, CompSci, CA
+
+Inserting row #5:
+10015, Penders, Alton, P, F, Math, GA
+
+Inserting row #6:
+10016, Allen, Diane, J, F, Geography, MN
+
+Inserting row #7:
+10017, Gill, Jennifer, , F, CompSci, TX
+
+Inserting row #8:
+10018, Johns, Roberta, , F, CompSci, TX
+
+Inserting row #9:
+10019, Wier, Paul, , M, Math, AL
+
+Inserting row #10:
+10020, Evans, Richard, , M, English, TX
+

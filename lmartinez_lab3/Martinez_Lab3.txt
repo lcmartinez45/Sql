@@ -1,0 +1,453 @@
+Lillian Martinez
+ITSE 1345
+Lab 3
+---------------------------------------------------------------------------------------------------
+
+1.
+
+CREATE OR REPLACE PROCEDURE emp_data_sp
+    (p_emp_num IN emp.empno%TYPE)
+IS
+    rec_emp emp%ROWTYPE;
+BEGIN
+    SELECT * 
+        INTO rec_emp 
+        FROM emp
+        WHERE empno = p_emp_num;
+    DBMS_OUTPUT.PUT_LINE('Employee #:    ' || rec_emp.empno);
+    DBMS_OUTPUT.PUT_LINE('Employee Name: ' || rec_emp.ename);
+    DBMS_OUTPUT.PUT_LINE('Job:           ' || rec_emp.job);
+    DBMS_OUTPUT.PUT_LINE('Manager:       ' || rec_emp.mgr);
+    DBMS_OUTPUT.PUT_LINE('Hire Date:     ' || rec_emp.hiredate);
+    DBMS_OUTPUT.PUT_LINE('Salary:        ' || rec_emp.sal);
+    DBMS_OUTPUT.PUT_LINE('Commission:    ' || rec_emp.comm);
+    DBMS_OUTPUT.PUT_LINE('Department #:  ' || rec_emp.deptno);
+    DBMS_OUTPUT.PUT_LINE('');
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Employee #' || p_emp_num || ' not found.');
+END;
+
+
+Procedure EMP_DATA_SP compiled
+
+
+BEGIN
+    emp_data_sp(7902);
+    emp_data_sp(7935);
+END;
+
+
+PL/SQL procedure successfully completed.
+
+
+Employee #:    7902
+Employee Name: FORD
+Job:           ANALYST
+Manager:       7566
+Hire Date:     03-DEC-95
+Salary:        3000
+Commission:    
+Department #:  20
+
+Employee #7935 not found.
+
+
+---------------------------------------------------------------------------------------------------
+2.
+
+CREATE OR REPLACE FUNCTION compare_dates_sf
+    (p_date1 IN DATE,
+     p_date2 IN DATE)
+    RETURN INT
+IS
+    lv_compare INT;
+BEGIN
+    CASE
+        WHEN p_date1 < p_date2 THEN
+            lv_compare := -1;      
+        WHEN p_date1 = p_date2 THEN
+            lv_compare := 0;
+        WHEN p_date1 > p_date2 THEN
+            lv_compare := 1;
+    END CASE;
+    RETURN lv_compare;
+END;
+
+
+Function COMPARE_DATES_SF compiled
+
+
+DECLARE
+    lv_date1 DATE := '01-DEC-20';
+    lv_date2 DATE := '01-NOV-20';
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Dates');
+    DBMS_OUTPUT.PUT_LINE('---------------------');
+    DBMS_OUTPUT.PUT_LINE('Date 1: ' || lv_date1);
+    DBMS_OUTPUT.PUT_LINE('Date 2: ' || lv_date2);
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('Comparing Dates');
+    DBMS_OUTPUT.PUT_LINE('-----------------------------------');
+    DBMS_OUTPUT.PUT_LINE(lv_date1 || ' vs. ' || lv_date2 || '     = ' || compare_dates_sf(lv_date1, lv_date2));
+    DBMS_OUTPUT.PUT_LINE(lv_date2 || ' vs. ' || lv_date2 || '     = ' || compare_dates_sf(lv_date2, lv_date2));
+    DBMS_OUTPUT.PUT_LINE(lv_date2 || ' vs. ' || lv_date1 || '     = ' || compare_dates_sf(lv_date2, lv_date1));
+END;
+
+
+PL/SQL procedure successfully completed.
+
+
+Dates
+---------------------
+Date 1: 01-DEC-20
+Date 2: 01-NOV-20
+
+Comparing Dates
+-----------------------------------
+01-DEC-20 vs. 01-NOV-20     = 1
+01-NOV-20 vs. 01-NOV-20     = 0
+01-NOV-20 vs. 01-DEC-20     = -1
+
+
+---------------------------------------------------------------------------------------------------
+3.
+
+CREATE OR REPLACE PROCEDURE cust_info_sp
+    (p_acct_id IN customer.account_id%TYPE,
+     rec_cust OUT customer%ROWTYPE)
+    IS
+BEGIN
+    SELECT * 
+        INTO rec_cust
+        FROM customer
+        WHERE account_id = p_acct_id;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Account_ID not valid');
+        DBMS_OUTPUT.PUT_LINE('');
+        rec_cust.cust_id := 99999;
+        rec_cust.cust_name := '*******';
+        rec_cust.account_id := p_acct_id;
+        rec_cust.account_type := '**';
+        rec_cust.state := '**';
+END;
+
+
+Procedure CUST_INFO_SP compiled
+
+
+DECLARE
+    rec_cust customer%ROWTYPE;
+    lv_acct_id_1 customer.account_id%TYPE := 'A-11108';
+    lv_acct_id_2 customer.account_id%TYPE := '11108';
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Retrieving customer information for Account ID# ' || lv_acct_id_1);
+    DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------');
+    cust_info_sp(lv_acct_id_1, rec_cust);
+    DBMS_OUTPUT.PUT_LINE('Customer ID:   ' || rec_cust.cust_id);
+    DBMS_OUTPUT.PUT_LINE('Customer Name: ' || rec_cust.cust_name);
+    DBMS_OUTPUT.PUT_LINE('Account ID:    ' || rec_cust.account_id);
+    DBMS_OUTPUT.PUT_LINE('Account Type:  ' || rec_cust.account_type);
+    DBMS_OUTPUT.PUT_LINE('State:         ' || rec_cust.state);
+    DBMS_OUTPUT.PUT_LINE('');
+    
+    DBMS_OUTPUT.PUT_LINE('Retrieving customer information for Account ID# ' || lv_acct_id_2);
+    DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------');
+    cust_info_sp(lv_acct_id_2, rec_cust);
+    DBMS_OUTPUT.PUT_LINE('Customer ID:   ' || rec_cust.cust_id);
+    DBMS_OUTPUT.PUT_LINE('Customer Name: ' || rec_cust.cust_name);
+    DBMS_OUTPUT.PUT_LINE('Account ID:    ' || rec_cust.account_id);
+    DBMS_OUTPUT.PUT_LINE('Account Type:  ' || rec_cust.account_type);
+    DBMS_OUTPUT.PUT_LINE('State:         ' || rec_cust.state);
+END;
+
+
+PL/SQL procedure successfully completed.
+
+
+Retrieving customer information for Account ID# A-11108
+-------------------------------------------------------
+Customer ID:   90008
+Customer Name: Cooper Inc.
+Account ID:    A-11108
+Account Type:  PR
+State:         MD
+
+Retrieving customer information for Account ID# 11108
+-------------------------------------------------------
+Account_ID not valid
+
+Customer ID:   99999
+Customer Name: *******
+Account ID:    11108
+Account Type:  **
+State:         **
+
+
+---------------------------------------------------------------------------------------------------
+4.
+
+-- Drop the table 
+DROP TABLE physician; 		
+
+-- Create the table 
+CREATE TABLE physician (
+    phys_id NUMBER(5) PRIMARY KEY,
+    phys_name VARCHAR2(20) NOT NULL,
+    phys_phone VARCHAR2(15),
+    phys_specialty VARCHAR2(25)
+    );
+
+
+Table PHYSICIAN dropped.
+Table PHYSICIAN created.
+
+
+-- Populate the table
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (1, 'Smith, Kylie', '512-111-1111', 'Dermatology');
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (2, 'Jones, Michael', '512-222-2222', 'Family Medicine');
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (3, 'White, Lilly', '512-333-3333', 'Psychiatry and Neurology');
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (4, 'Hine, Peter', '512-444-4444', 'Pediatrics');
+INSERT INTO physician (phys_id, phys_name, phys_phone, phys_specialty)
+    VALUES (5, 'Lopez, Julia', '512-555-5555', 'Orthopaedic');
+COMMIT;
+
+
+1 row inserted.
+
+1 row inserted.
+
+1 row inserted.
+
+1 row inserted.
+
+1 row inserted.
+
+Commit complete.
+
+-- Output the table
+COLUMN phys_id HEADING 'Physician ID'
+COLUMN phys_name HEADING 'Physician Name'
+COLUMN phys_phone HEADING 'Physician #'
+COLUMN phys_specialty HEADING 'Physician Specialty'
+
+SELECT * FROM physician;
+
+
+Physician ID Physician Name       Physician #     Physician Specialty      
+------------ -------------------- --------------- -------------------------
+           1 Smith, Kylie         512-111-1111    Dermatology              
+           2 Jones, Michael       512-222-2222    Family Medicine          
+           3 White, Lilly         512-333-3333    Psychiatry and Neurology 
+           4 Hine, Peter          512-444-4444    Pediatrics               
+           5 Lopez, Julia         512-555-5555    Orthopaedic             
+    
+
+5 rows selected. 
+
+
+DECLARE
+  lv_phys_id physician.phys_id%type          :=6;
+  lv_phys_name physician.phys_name%type      :='Garcia, Carmen';
+  lv_phys_phone physician.phys_phone%type    :='512-666-6666';
+  lv_phys_spec physician.phys_specialty%type :='Radiology';
+  rec_phys physician%ROWTYPE;
+  lv_valid BOOLEAN := FALSE;
+BEGIN
+  SELECT * 
+      INTO rec_phys 
+      FROM physician 
+      WHERE phys_id=lv_phys_id;
+  IF SQL%FOUND THEN
+    lv_valid :=TRUE;
+  END IF;
+  IF lv_valid = TRUE THEN
+    UPDATE PHYSICIAN
+    SET phys_name      =lv_phys_name,
+        phys_phone     =lv_phys_phone,
+        phys_specialty =lv_phys_spec
+    WHERE phys_id      =lv_phys_id;
+  END IF;
+  DBMS_OUTPUT.PUT_LINE ('Physician ID#: '||lv_phys_id||' has been updated.');
+EXCEPTION
+WHEN NO_DATA_FOUND THEN
+  INSERT
+  INTO PHYSICIAN
+    (phys_id,
+     phys_name,
+     phys_phone,
+     phys_specialty)
+    VALUES
+    (lv_phys_id,
+     lv_phys_name,
+     lv_phys_phone,
+     lv_phys_spec);
+  DBMS_OUTPUT.PUT_LINE ('Physician ID#: '||lv_phys_id||' has been inserted.');
+END;
+
+PL/SQL procedure successfully completed.
+
+Physician ID#: 6 has been inserted.
+
+
+SELECT * FROM physician;
+
+Physician ID Physician Name       Physician #     Physician Specialty      
+------------ -------------------- --------------- -------------------------
+           1 Smith, Kylie         512-111-1111    Dermatology              
+           2 Jones, Michael       512-222-2222    Family Medicine          
+           3 White, Lilly         512-333-3333    Psychiatry and Neurology 
+           4 Hine, Peter          512-444-4444    Pediatrics               
+           5 Lopez, Julia         512-555-5555    Orthopaedic              
+           6 Garcia, Carmen       512-666-6666    Radiology                
+
+6 rows selected. 
+
+
+DECLARE
+  lv_phys_id physician.phys_id%TYPE          :=1;
+  lv_phys_name physician.phys_name%TYPE      :='Harris, Kamala';
+  lv_phys_phone physician.phys_phone%TYPE    :='512-777-7777';
+  lv_phys_spec physician.phys_specialty%TYPE :='OBGYN';
+  rec_phys physician%ROWTYPE;
+  lv_valid BOOLEAN := FALSE;
+BEGIN
+  SELECT * 
+      INTO rec_phys 
+      FROM physician 
+      WHERE phys_id=lv_phys_id;
+  IF SQL%FOUND THEN
+    lv_valid :=TRUE;
+  END IF;
+  IF lv_valid = TRUE THEN
+    UPDATE PHYSICIAN
+    SET phys_name      =lv_phys_name,
+        phys_phone     =lv_phys_phone,
+        phys_specialty =lv_phys_spec
+    WHERE phys_id      =lv_phys_id;
+  END IF;
+  DBMS_OUTPUT.PUT_LINE ('Physician ID#: '||lv_phys_id||' has been updated.');
+EXCEPTION
+WHEN NO_DATA_FOUND THEN
+  INSERT
+  INTO PHYSICIAN
+    (phys_id,
+     phys_name,
+     phys_phone,
+     phys_specialty)
+    VALUES
+    (lv_phys_id,
+     lv_phys_name,
+     lv_phys_phone,
+     lv_phys_spec);
+  DBMS_OUTPUT.PUT_LINE ('Physician ID#: '||lv_phys_id||' has been inserted.');
+END;
+
+PL/SQL procedure successfully completed.
+
+Physician ID#: 1 has been updated.
+
+
+SELECT * FROM physician;
+
+
+Physician ID Physician Name       Physician #     Physician Specialty      
+------------ -------------------- --------------- -------------------------
+           1 Harris, Kamala       512-777-7777    OBGYN                    
+           2 Jones, Michael       512-222-2222    Family Medicine          
+           3 White, Lilly         512-333-3333    Psychiatry and Neurology 
+           4 Hine, Peter          512-444-4444    Pediatrics               
+           5 Lopez, Julia         512-555-5555    Orthopaedic              
+           6 Garcia, Carmen       512-666-6666    Radiology                
+
+6 rows selected. 
+
+
+---------------------------------------------------------------------------------------------------
+5.
+
+CREATE OR REPLACE FUNCTION adj_string_sf
+    (p_string IN VARCHAR2,
+     p_length IN NUMBER)    
+    RETURN VARCHAR2         
+IS
+    lv_str VARCHAR2(100);
+    ac_length NUMBER(2);
+BEGIN
+    SELECT LENGTH(LTRIM(p_string)) 
+    INTO ac_length FROM dual;
+    IF ac_length  < p_length THEN
+        lv_str  :=RPAD(LTRIM(p_string),p_length,' ');
+    ELSIF ac_length > p_length THEN
+        lv_str  :=SUBSTR(LTRIM(p_string),-ac_length,p_length);
+  END IF;
+  RETURN lv_str;    
+END;
+
+
+Function ADJ_STRING_SF compiled
+
+
+DECLARE
+    lv_orig_str VARCHAR2(40);   -- original string local variable
+    lv_spec_len INT;            -- specified length
+    lv_adj_str VARCHAR2(40);    -- adjusted string local variable
+BEGIN
+    lv_orig_str := 'What is the Time.';
+    lv_spec_len := 8;
+    
+    DBMS_OUTPUT.PUT_LINE('Original string: ' || lv_orig_str);
+    DBMS_OUTPUT.PUT_LINE('Original length: ' || length(lv_orig_str));
+    DBMS_OUTPUT.PUT_LINE('Specified length: ' || lv_spec_len);
+    lv_adj_str := adj_string_sf(lv_orig_str, lv_spec_len);     
+    DBMS_OUTPUT.PUT_LINE('Adjusted string: ' || lv_adj_str);
+    DBMS_OUTPUT.PUT_LINE('Adjusted length: ' || length(lv_adj_str));
+    DBMS_OUTPUT.PUT_LINE('--------------------------------------');
+       
+    lv_orig_str := 'What is the Time.';
+    lv_spec_len := 25;
+    
+    DBMS_OUTPUT.PUT_LINE('Original string: ' || lv_orig_str);
+    DBMS_OUTPUT.PUT_LINE('Original length: ' || length(lv_orig_str));
+    DBMS_OUTPUT.PUT_LINE('Specified length: ' || lv_spec_len);
+    lv_adj_str := adj_string_sf(lv_orig_str, lv_spec_len);     
+    DBMS_OUTPUT.PUT_LINE('Adjusted string: ' || lv_adj_str);
+    DBMS_OUTPUT.PUT_LINE('Adjusted length: ' || length(lv_adj_str));
+    DBMS_OUTPUT.PUT_LINE('--------------------------------------');
+    
+    lv_orig_str := '    What is the Time.         ';
+    lv_spec_len := 16;
+    
+    DBMS_OUTPUT.PUT_LINE('Original string: ' || lv_orig_str);
+    DBMS_OUTPUT.PUT_LINE('Original length: ' || length(lv_orig_str));
+    DBMS_OUTPUT.PUT_LINE('Specified length: ' || lv_spec_len);
+    lv_adj_str := adj_string_sf(lv_orig_str, lv_spec_len);     
+    DBMS_OUTPUT.PUT_LINE('Adjusted string: ' || lv_adj_str);
+    DBMS_OUTPUT.PUT_LINE('Adjusted length: ' || length(lv_adj_str));
+END;
+
+
+PL/SQL procedure successfully completed.
+
+Original string: What is the Time.
+Original length: 17
+Specified length: 8
+Adjusted string: What is 
+Adjusted length: 8
+--------------------------------------
+Original string: What is the Time.
+Original length: 17
+Specified length: 25
+Adjusted string: What is the Time.        
+Adjusted length: 25
+--------------------------------------
+Original string:     What is the Time.         
+Original length: 30
+Specified length: 16
+Adjusted string: What is the Time
+Adjusted length: 16

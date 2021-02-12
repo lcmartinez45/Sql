@@ -1,0 +1,526 @@
+Lillian Martinez
+ITSE-1345 
+Lab 2 
+-----------------------------------------------------------------------------
+
+DROP SEQUENCE seq_list#;
+DROP TABLE theatre;
+DROP SEQUENCE seq_stu_id#;
+DROP TABLE student;
+DROP TABLE course;
+DROP TABLE student_course;
+DROP TABLE temp_table;
+
+/*
+Problem 1:
+Create an Anonymous block. Declare a Sequence Number named list#, a
+constant named C_XYZ that is Number(10), an Binary Integer named V_Counter1, 
+a variable named V_Row_number based on the column Row in the Theater Table 
+(you will have to create the table and the row), and a character string named 
+String A that is up to 50 characters long. 
+*/
+
+CREATE SEQUENCE seq_list#
+        START WITH 1
+	INCREMENT BY 1
+	NOCACHE
+	NOCYCLE;
+
+CREATE TABLE theatre (
+	row_id NUMBER(4)
+);
+
+DECLARE
+	list# number := seq_list#.nextval;
+	c_xyz CONSTANT NUMBER(10) := 100;
+	v_counter1 BINARY_INTEGER;
+	v_row_number theatre.row_id%TYPE;
+	v_string_a VARCHAR2(50);
+BEGIN
+	NULL;
+END;
+
+-----------------------------------------------------------------------------
+/*
+Problem 2:
+Create an Anonymous block that Creates and Inserts data into the Student, 
+Course and Student/Course composite tables using the Create and Insert 
+commands. You will find the table description attached. 
+Create tables, then insert data.
+*/
+
+SET DEFINE OFF	-- Enables the insertion of the '&' character in course table
+
+CREATE SEQUENCE seq_stu_id# -- Create sequence for student id #
+	START WITH 10011
+	INCREMENT BY 1
+	NOCACHE
+	NOCYCLE;
+
+BEGIN
+EXECUTE IMMEDIATE	
+'CREATE TABLE student (
+	stu_id NUMBER(5) PRIMARY KEY,
+	lname VARCHAR2(20),
+	fname VARCHAR2(20),
+	mi CHAR(1),
+	sex CHAR(1),
+	major VARCHAR2(30),
+	home_state CHAR(2)
+)';
+
+EXECUTE IMMEDIATE
+'CREATE TABLE course (
+	course_id VARCHAR2(10),
+	section NUMBER(3),
+	c_name VARCHAR2(30),
+	c_description VARCHAR2(30)
+)';
+
+EXECUTE IMMEDIATE
+'CREATE TABLE student_course (
+	stu_id NUMBER(5),
+	course_id VARCHAR2(10),
+	section NUMBER(3)
+)';
+
+END;
+
+/*
+Use sequences to use next value and current value for student id # 
+with each student simutaneously inputing information in both the student table
+and the student course table
+*/
+
+-- Student and student course table
+BEGIN
+-- Student #1
+INSERT INTO student(stu_id, lname, fname, mi, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Smith', 'Peter', 'M', 'M', 'Math', 'TX');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'MATH1101', 001);
+
+-- Student #2
+INSERT INTO student(stu_id, lname, fname, mi, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Jones', 'Sam', 'A', 'M', 'English', 'TX');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'ENGL2617', 002);
+
+-- Student #3
+INSERT INTO student(stu_id, lname, fname, mi, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Peters', 'Amy', 'A', 'F', 'English', 'ME');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'ENGL1001', 001);
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'ENGL2617', 002);
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'GEOG1010', 001);
+	
+-- Student #4
+INSERT INTO student(stu_id, lname, fname, mi, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Johnson', 'John', 'J', 'M', 'CompSci', 'CA');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'COSC1315', 001);
+	
+-- Student #5
+INSERT INTO student(stu_id, lname, fname, mi, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Penders', 'Alton', 'P', 'F', 'Math', 'GA');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'MATH1101', 001);
+	
+-- Student #6
+INSERT INTO student(stu_id, lname, fname, mi, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Allen', 'Diane', 'J', 'F', 'Geography', 'MN');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'GEOG1010', 001);
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'GEOG1791', 002);
+	
+-- Student #7
+INSERT INTO student(stu_id, lname, fname, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Gill', 'Jennifer', 'F', 'CompSci', 'TX');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'COSC1315', 001);
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'ITSE2309', 001);
+	
+-- Student #8
+INSERT INTO student(stu_id, lname, fname, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Johns', 'Roberta', 'F', 'CompSci', 'TX');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'COSC1315', 001);
+	
+-- Student #9
+INSERT INTO student(stu_id, lname, fname, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Wier', 'Paul', 'M', 'Math', 'AL');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'ITSE2309', 001);
+	
+-- Student #10
+INSERT INTO student(stu_id, lname, fname, sex, major, home_state)
+	VALUES(seq_stu_id#.NEXTVAL, 'Evans', 'Richard', 'M', 'English', 'TX');
+INSERT INTO student_course(stu_id, course_id, section)
+	VALUES(seq_stu_id#.CURRVAL, 'ENGL2617', 002);
+	
+-- Course Table
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('COSC1300', 001, 'Intro to Comp.', 'First Computer Course');
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('ITSE2309', 001, 'Intro to DBA', 'Database Course');
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('GEOG1791', 002, 'World Geography', 'Second Geography Course');
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('COSC1315', 001, 'Intro to Prog.', 'Second Computer Course');
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('ITSE1345', 001, 'Intro to DB Prog.', 'Second Database Course');
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('ENGL2617', 002, 'English Literature', 'Second English Course');
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('MATH1101', 001, 'Calculus II', 'Second Math Course');
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('ENGL1001', 001, 'American Literature', 'First English Course');
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('MATH1011', 001, 'Trig. & Algebra', 'First Math Course');
+INSERT INTO course(course_id, section, c_name, c_description)
+	VALUES('GEOG1010', 001, 'Texas Geography', 'First Geography Course');
+
+COMMIT;
+
+END;
+
+-- Turn this setting back on only needed for input in course table, best practice
+SET DEFINE ON	
+COLUMN stu_id HEADING 'Stu_ID' FORMAT A6
+COLUMN lname HEADING 'LName' FORMAT A10
+COLUMN fname HEADING 'FName' FORMAT A10
+COLUMN mi HEADING 'Mi' FORMAT A3
+COLUMN sex HEADING 'Sex' FORMAT A4
+COLUMN major HEADING 'Major' FORMAT A10
+COLUMN home_state HEADING 'Home_State' FORMAT A10
+COLUMN course_id HEADING 'Course_ID'
+COLUMN section HEADING 'Section#' FORMAT 009
+COLUMN c_name HEADING 'Course_Name' FORMAT A20
+COLUMN c_description HEADING 'Course_Description' FORMAT A25
+
+DESCRIBE student;
+SELECT * FROM student;
+
+DESCRIBE course;
+SELECT * FROM course;
+
+DESCRIBE student_course;
+SELECT * FROM student_course;
+
+-----------------------------------------------------------------------------
+/*
+Problem 3:
+Create an Anonymous block that counts the number of courses a student is 
+signed up for in the Course/Student composite table. Use the tables you 
+created in #2 above.
+*/
+
+DECLARE
+  l_stu_id number(5);
+  num_courses number(2);
+  
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Student ID    # of courses');
+  DBMS_OUTPUT.PUT_LINE('--------------------------');
+  FOR i in 10011..10020 loop
+    SELECT DISTINCT stu_id, count(course_id)
+      INTO l_stu_id, num_courses
+    FROM student_course
+    WHERE stu_id = i
+    GROUP by stu_id;
+    DBMS_OUTPUT.PUT_LINE(l_stu_id || '          ' || num_courses);
+  END LOOP;
+END;
+
+-----------------------------------------------------------------------------
+/*
+Problem 4:
+Create an Anonymous block that counts the number of students enrolled in 
+the Student table. Use DBMS Output Putline to send out a message stating 
+the number of students found. 
+*/
+
+DECLARE
+  lv_total_students NUMBER(2);
+
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Number of students');
+  DBMS_OUTPUT.PUT_LINE('------------------');
+  SELECT COUNT (stu_id)
+    INTO lv_total_students
+    FROM student;
+  DBMS_OUTPUT.PUT_LINE(lv_total_students || ' students found enrolled.');
+END;
+
+-----------------------------------------------------------------------------
+/*
+Problem 5:
+Create an Anonymous block that determines the number of courses in the 
+StudentCourse table and (using the IF statement) if the number is greater 
+than 10 sends out a message (using DBMS Output Putline) stating that 
+“more than 10 courses have been established”. If the number is less than 
+10 send out a message stating “less than 10 courses established”. 
+*/
+
+DECLARE
+  lv_num_courses number(2);
+  
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Number of courses');
+  DBMS_OUTPUT.PUT_LINE('-----------------');
+  SELECT COUNT (DISTINCT course_id)
+    INTO lv_num_courses
+    FROM student_course;
+  IF lv_num_courses > 10 THEN
+    DBMS_OUTPUT.PUT_LINE('more than 10 courses have been established');
+  ELSIF lv_num_courses < 10 THEN
+    DBMS_OUTPUT.PUT_LINE('less than 10 courses established');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE(lv_num_courses || 'courses have been established');
+  END IF;
+END;
+
+
+-----------------------------------------------------------------------------
+/*
+Problem 6:
+Create an Anonymous block that tests each student entry in the student table 
+to see if the student is an instate student. Print out, 
+(using the DBMS Output Putline) a line stating that each student is or is 
+not an instate student and a count of the students in and out of state at 
+the end of the program.
+*/ 
+
+DECLARE
+    lv_instate NUMBER(2) := 0;
+    lv_outstate NUMBER(2) := 0;
+    TYPE type_student IS TABLE OF student%ROWTYPE;
+    tbl_student type_student;
+BEGIN
+    SELECT * BULK COLLECT INTO tbl_student FROM student;
+    DBMS_OUTPUT.PUT_LINE('Stu_ID   Instate?');
+    DBMS_OUTPUT.PUT_LINE('-----------------');
+    FOR i IN 1..tbl_student.COUNT LOOP
+        IF (tbl_student(i).home_state = 'TX') THEN
+            lv_instate := lv_instate + 1;
+            DBMS_OUTPUT.PUT_LINE(tbl_student(i).stu_id || '    Yes');
+        ELSE
+            lv_outstate := lv_outstate + 1;
+            DBMS_OUTPUT.PUT_LINE(tbl_student(i).stu_id || '    No');
+        END IF;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('Instate: ' || lv_instate);
+    DBMS_OUTPUT.PUT_LINE('Out of State: ' || lv_outstate);
+END;
+
+
+-----------------------------------------------------------------------------
+/*
+Problem 7:
+Create an Anonymous block that takes the information provided by Named 
+Parameters, & Variable_Name, to determine if a student is registered in the 
+specified course from the student/course table created above. Use the DBMS 
+Output Putline to send a message indicating if the student specified is in 
+the course specified.
+*/
+
+DECLARE
+    lv_stu_id student_course.stu_id%TYPE := 10012;
+    lv_course_id student_course.course_id%TYPE := 'COSC1315';
+    lv_flag_exists NUMBER(1) := 0;
+BEGIN
+    SELECT COUNT(*) INTO lv_flag_exists FROM student_course
+        WHERE stu_id = lv_stu_id
+        AND course_id = lv_course_id;
+    IF (lv_flag_exists = 0) THEN
+        DBMS_OUTPUT.PUT_LINE('Student ID#: ' || lv_stu_id || ' is not enrolled in ' || lv_course_id || '.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Student ID#: ' || lv_stu_id || ' is enrolled in ' || lv_course_id || '.');
+    END IF;
+END;
+
+-----------------------------------------------------------------------------
+/*
+Problem 8:
+Create an Anonymous block that uses the: 
+1) “If”  construct to test if each student is male or female and
+2) The “Case” Construct to determine if the major is a Math, English, 
+Comp Sci, or Geography major. 
+*/
+
+DECLARE
+    TYPE type_student IS TABLE OF student%ROWTYPE;
+    tbl_student type_student;
+    lv_sex VARCHAR2(10);
+    lv_cnt_male NUMBER(2) := 0;
+    lv_cnt_female NUMBER(2) := 0;
+    lv_major VARCHAR2(30);
+    lv_cnt_math NUMBER(2) := 0;
+    lv_cnt_english NUMBER(2) := 0;
+    lv_cnt_compsci NUMBER(2) := 0;
+    lv_cnt_geog NUMBER(2) := 0;
+BEGIN
+    SELECT * BULK COLLECT INTO tbl_student FROM student;
+    DBMS_OUTPUT.PUT_LINE('StuID#      Sex      Major');
+    DBMS_OUTPUT.PUT_LINE('-------------------------------------');
+    FOR i IN 1..tbl_student.COUNT LOOP
+        IF (tbl_student(i).sex = 'M') THEN
+            lv_sex := 'Male  ';
+            lv_cnt_male := lv_cnt_male + 1;
+        ELSIF (tbl_student(i).sex = 'F') THEN
+            lv_sex := 'Female';
+            lv_cnt_female := lv_cnt_female + 1;
+        ELSE
+            lv_sex := '      ';
+        END IF;
+        CASE
+            WHEN tbl_student(i).major = 'Math' THEN
+                lv_major := 'Mathematics';
+                lv_cnt_math := lv_cnt_math + 1;
+            WHEN tbl_student(i).major = 'English' THEN
+                lv_major := 'English';
+                lv_cnt_english := lv_cnt_english + 1;
+            WHEN tbl_student(i).major = 'CompSci' THEN
+                lv_major := 'Computer Science';
+                lv_cnt_compsci := lv_cnt_compsci + 1;
+            WHEN tbl_student(i).major = 'Geography' THEN
+                lv_major := 'Geography';
+                lv_cnt_geog := lv_cnt_geog + 1;
+        END CASE;
+        DBMS_OUTPUT.PUT_LINE(tbl_student(i).stu_id || '       ' || lv_sex || '   ' || lv_major);
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('Number of Males: ' || lv_cnt_male);
+    DBMS_OUTPUT.PUT_LINE('Number of Females: ' || lv_cnt_female);
+    DBMS_OUTPUT.PUT_LINE('Number of Math majors: ' || lv_cnt_math);
+    DBMS_OUTPUT.PUT_LINE('Number of English majors: ' || lv_cnt_english);
+    DBMS_OUTPUT.PUT_LINE('Number of Computer Science majors: ' || lv_cnt_compsci);
+    DBMS_OUTPUT.PUT_LINE('Number of Geography majors: ' || lv_cnt_geog);
+END;
+
+-----------------------------------------------------------------------------
+/*
+Problem 9:
+Create an Anonymous block that performs the same activity as in #8 above 
+using the  "IF" construct in place of the Case Construct.
+*/
+
+DECLARE
+    TYPE type_student IS TABLE OF student%ROWTYPE;
+    tbl_student type_student;
+    lv_sex VARCHAR2(10);
+    lv_cnt_male NUMBER(2) := 0;
+    lv_cnt_female NUMBER(2) := 0;
+    lv_major VARCHAR2(30);
+    lv_cnt_math NUMBER(2) := 0;
+    lv_cnt_english NUMBER(2) := 0;
+    lv_cnt_compsci NUMBER(2) := 0;
+    lv_cnt_geog NUMBER(2) := 0;
+BEGIN
+    SELECT * BULK COLLECT INTO tbl_student FROM student;
+    DBMS_OUTPUT.PUT_LINE('StuID#      Sex      Major');
+    DBMS_OUTPUT.PUT_LINE('--------------------------');
+    FOR i IN 1..tbl_student.COUNT LOOP
+        IF (tbl_student(i).sex = 'M') THEN
+            lv_sex := 'Male  ';
+            lv_cnt_male := lv_cnt_male + 1;
+        ELSIF (tbl_student(i).sex = 'F') THEN
+            lv_sex := 'Female';
+            lv_cnt_female := lv_cnt_female + 1;
+        ELSE
+            lv_sex := '      ';
+        END IF;
+        IF tbl_student(i).major = 'Math' THEN
+            lv_major := 'Mathematics';
+            lv_cnt_math := lv_cnt_math + 1;
+        ELSIF tbl_student(i).major = 'English' THEN
+            lv_major := 'English';
+            lv_cnt_english := lv_cnt_english + 1;
+        ELSIF tbl_student(i).major = 'CompSci' THEN
+            lv_major := 'Computer Science';
+            lv_cnt_compsci := lv_cnt_compsci + 1;
+        ELSIF tbl_student(i).major = 'Geography' THEN
+            lv_major := 'Geography';
+            lv_cnt_geog := lv_cnt_geog + 1;
+        ELSE
+            lv_major := '';
+        END IF;
+        DBMS_OUTPUT.PUT_LINE(tbl_student(i).stu_id || '       ' || lv_sex || '   ' || lv_major);
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('Number of Males: ' || lv_cnt_male);
+    DBMS_OUTPUT.PUT_LINE('Number of Females: ' || lv_cnt_female);
+    DBMS_OUTPUT.PUT_LINE('Number of Math majors: ' || lv_cnt_math);
+    DBMS_OUTPUT.PUT_LINE('Number of English majors: ' || lv_cnt_english);
+    DBMS_OUTPUT.PUT_LINE('Number of Computer Science majors: ' || lv_cnt_compsci);
+    DBMS_OUTPUT.PUT_LINE('Number of Geography majors: ' || lv_cnt_geog);
+END;
+
+-----------------------------------------------------------------------------
+/*
+Problem 10:
+Create an Anonymous block that Inserts rows of data from the student table 
+into a temporary table and uses a loop with a counter to know when to exit. 
+Set the counter equal to the Count of the rows in the student table so it 
+will know when to end processing. 
+*/
+
+CREATE TABLE temp_table(
+	stu_id NUMBER(5) PRIMARY KEY,
+	lname VARCHAR2(20),
+	fname VARCHAR2(20),
+	mi CHAR(1),
+	sex CHAR(1),
+	major VARCHAR2(30),
+	home_state CHAR(2)
+);
+
+COMMIT;
+
+DECLARE 
+    TYPE type_student IS TABLE OF student%ROWTYPE
+        INDEX BY PLS_INTEGER;
+    tbl_student type_student;
+    lv_counter NUMBER(2) := 1;
+    lv_total_cnt NUMBER(2) := 0;
+    rec_temp_table temp_table%ROWTYPE;
+BEGIN
+    SELECT * BULK COLLECT INTO tbl_student FROM student;
+    SELECT COUNT(*) INTO lv_total_cnt FROM student;
+    DBMS_OUTPUT.PUT_LINE('Count of rows in the student table: ' || lv_total_cnt);
+    DBMS_OUTPUT.PUT_LINE('');
+    WHILE lv_counter <= lv_total_cnt LOOP
+        DBMS_OUTPUT.PUT_LINE('Inserting row #' || lv_counter || ':');
+        INSERT INTO temp_table
+            VALUES(tbl_student(lv_counter).stu_id, 
+                tbl_student(lv_counter).lname, 
+                tbl_student(lv_counter).fname, 
+                tbl_student(lv_counter).mi, 
+                tbl_student(lv_counter).sex, 
+                tbl_student(lv_counter).major, 
+                tbl_student(lv_counter).home_state);
+        SELECT * INTO rec_temp_table
+            FROM temp_table
+            WHERE stu_id = tbl_student(lv_counter).stu_id;
+        DBMS_OUTPUT.PUT_LINE(rec_temp_table.stu_id || ', ' ||
+            rec_temp_table.lname || ', ' ||
+            rec_temp_table.fname || ', ' ||
+            rec_temp_table.mi || ', ' ||
+            rec_temp_table.sex || ', ' ||
+            rec_temp_table.major || ', ' ||
+            rec_temp_table.home_state
+            );
+        lv_counter := lv_counter + 1;
+        DBMS_OUTPUT.PUT_LINE('');
+    END LOOP;
+END;
+
+DESCRIBE temp_table;
+SELECT * FROM temp_table;
+
+-----------------------------------------------------------------------------

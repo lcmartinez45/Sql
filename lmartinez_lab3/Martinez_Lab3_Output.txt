@@ -1,0 +1,143 @@
+Lillian Martinez
+ITSE 1345
+Lab 3
+Output
+---------------------------------------------------------------------------------------------------
+1.
+Procedure EMP_DATA_SP compiled
+
+PL/SQL procedure successfully completed.
+
+Employee #:    7902
+Employee Name: FORD
+Job:           ANALYST
+Manager:       7566
+Hire Date:     03-DEC-95
+Salary:        3000
+Commission:    
+Department #:  20
+
+Employee #7935 not found.
+
+---------------------------------------------------------------------------------------------------
+2.
+Function COMPARE_DATES_SF compiled
+
+PL/SQL procedure successfully completed.
+
+Dates
+---------------------
+Date 1: 01-DEC-20
+Date 2: 01-NOV-20
+
+Comparing Dates
+-----------------------------------
+01-DEC-20 vs. 01-NOV-20     = 1
+01-NOV-20 vs. 01-NOV-20     = 0
+01-NOV-20 vs. 01-DEC-20     = -1
+
+---------------------------------------------------------------------------------------------------
+3.
+Procedure CUST_INFO_SP compiled
+
+PL/SQL procedure successfully completed.
+
+
+Retrieving customer information for Account ID# A-11108
+-------------------------------------------------------
+Customer ID:   90008
+Customer Name: Cooper Inc.
+Account ID:    A-11108
+Account Type:  PR
+State:         MD
+
+Retrieving customer information for Account ID# 11108
+-------------------------------------------------------
+Account_ID not valid
+
+Customer ID:   99999
+Customer Name: *******
+Account ID:    11108
+Account Type:  **
+State:         **
+
+---------------------------------------------------------------------------------------------------
+4.
+Table PHYSICIAN dropped.
+
+Table PHYSICIAN created.
+
+1 row inserted.
+
+1 row inserted.
+
+1 row inserted.
+
+1 row inserted.
+
+1 row inserted.
+
+Commit complete.
+
+Physician ID Physician Name       Physician #     Physician Specialty      
+------------ -------------------- --------------- -------------------------
+           1 Smith, Kylie         512-111-1111    Dermatology              
+           2 Jones, Michael       512-222-2222    Family Medicine          
+           3 White, Lilly         512-333-3333    Psychiatry and Neurology 
+           4 Hine, Peter          512-444-4444    Pediatrics               
+           5 Lopez, Julia         512-555-5555    Orthopaedic             
+    
+
+5 rows selected.
+
+
+Physician ID#: 6 has been inserted.
+
+Physician ID Physician Name       Physician #     Physician Specialty      
+------------ -------------------- --------------- -------------------------
+           1 Smith, Kylie         512-111-1111    Dermatology              
+           2 Jones, Michael       512-222-2222    Family Medicine          
+           3 White, Lilly         512-333-3333    Psychiatry and Neurology 
+           4 Hine, Peter          512-444-4444    Pediatrics               
+           5 Lopez, Julia         512-555-5555    Orthopaedic              
+           6 Garcia, Carmen       512-666-6666    Radiology                
+
+6 rows selected. 
+
+
+Physician ID#: 1 has been updated.
+
+Physician ID Physician Name       Physician #     Physician Specialty      
+------------ -------------------- --------------- -------------------------
+           1 Harris, Kamala       512-777-7777    OBGYN                    
+           2 Jones, Michael       512-222-2222    Family Medicine          
+           3 White, Lilly         512-333-3333    Psychiatry and Neurology 
+           4 Hine, Peter          512-444-4444    Pediatrics               
+           5 Lopez, Julia         512-555-5555    Orthopaedic              
+           6 Garcia, Carmen       512-666-6666    Radiology                
+
+6 rows selected. 
+
+---------------------------------------------------------------------------------------------------
+5.
+Function ADJ_STRING_SF compiled
+
+PL/SQL procedure successfully completed.
+
+Original string: What is the Time.
+Original length: 17
+Specified length: 8
+Adjusted string: What is 
+Adjusted length: 8
+--------------------------------------
+Original string: What is the Time.
+Original length: 17
+Specified length: 25
+Adjusted string: What is the Time.        
+Adjusted length: 25
+--------------------------------------
+Original string:     What is the Time.         
+Original length: 30
+Specified length: 16
+Adjusted string: What is the Time
+Adjusted length: 16

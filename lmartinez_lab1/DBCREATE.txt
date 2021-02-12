@@ -1,0 +1,73 @@
+drop table emp_service_log;
+drop table emp_service;
+drop table purchase_order;
+drop table emp;
+drop table dept;
+drop table customer;
+drop table widgets;
+drop table salgrade;
+drop table state_lookup;
+
+
+
+CREATE TABLE state_lookup
+(state       	VARCHAR2(2) CONSTRAINT pk_state_lookup PRIMARY KEY,
+ state_desc  	VARCHAR2(16));
+
+CREATE TABLE dept 
+   (deptno    number(3) CONSTRAINT pk_dept PRIMARY KEY,                      
+    dname     VARCHAR2(15),
+    loc       VARCHAR2(10));
+
+CREATE TABLE emp 
+   (empno      number(4)    CONSTRAINT pk_emp PRIMARY KEY,
+    ename      varchar2(10) NOT NULL,
+    job        varchar2(10),
+    mgr        number(4) ,
+    hiredate   date,
+    sal        number(6),
+    comm       number(6),
+    deptno     number(3));
+	
+CREATE TABLE salgrade
+   (grade number(3) CONSTRAINT pk_salgrade PRIMARY KEY,
+    losal number(5),
+    hisal number(6));
+
+CREATE TABLE customer
+(cust_id       	NUMBER(5) CONSTRAINT pk_customer PRIMARY KEY,
+ cust_name     	VARCHAR2(15),
+ account_id    	VARCHAR2(10) ,
+ account_type  	VARCHAR2(2),
+ state         	VARCHAR2(2));
+
+CREATE TABLE widgets  
+(widget_id 	NUMBER(5) CONSTRAINT pk_widgets PRIMARY KEY,                                         
+ status  	VARCHAR2(3) ,      
+ sample  	VARCHAR2(3) ,                         
+ length  	NUMBER(5)   ,        
+ width   	NUMBER(5),                                                 
+ height  	NUMBER(5)) ;
+
+CREATE TABLE purchase_order
+(order_id       NUMBER(5),
+ widget_id      NUMBER (5),
+ cust_id        NUMBER(5),
+ quantity       NUMBER (5),
+ purchase_date  DATE,
+ purchase_price NUMBER(5),
+ dev            VARCHAR2(1)) ;
+
+CREATE TABLE emp_service
+(empno    	NUMBER(5),
+ cust_id   	NUMBER(5),
+ sales     	NUMBER(5));
+
+CREATE TABLE emp_service_log
+(empno    	NUMBER(5),
+ cust_id   	NUMBER(5),
+ log       	VARCHAR2(40));
+
+
+
+
